@@ -1,4 +1,4 @@
-import { useState, createContext, useContext, useMemo } from "react";
+import { useState, createContext, useContext, useMemo, useEffect } from "react";
 
 import {
     CssBaseline,
@@ -9,6 +9,8 @@ import {
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { QueryClientProvider, QueryClient } from "react-query";
 
+import { fetchVerify } from "./libs/fetcher";
+
 import Template from "./Template";
 import Home from "./pages/Home";
 import Login from  "./pages/Login";
@@ -16,6 +18,7 @@ import Register from "./pages/Register";
 import Likes from "./pages/Likes";
 import Profile from "./pages/Profile";  
 import Comments from "./pages/Comments";
+
 
 import { deepPurple, grey } from "@mui/material/colors";
 
@@ -70,6 +73,12 @@ export default function ThemeApp() {
     const [ auth, setAuth ] = useState(null);
     const [ mode, setMode ] = useState("dark");
     
+    useEffect(() => {
+        fetchVerify().then(user => {
+            if(user) setAuth(user);
+        });
+    }, []);
+    
     const theme = useMemo(() => {
         return createTheme({
             palette: { 
@@ -82,6 +91,7 @@ export default function ThemeApp() {
             },
         });
     }, [mode]);
+
 
     return (
         <ThemeProvider theme={theme}>

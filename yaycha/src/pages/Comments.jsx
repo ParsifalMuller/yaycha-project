@@ -1,4 +1,5 @@
 import { Box, Button, TextField, Alert } from "@mui/material";
+import { useRef } from "react";
 
 import Item from "../components/Item";
 
@@ -6,6 +7,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation } from "react-query";
 import { queryClient } from "../ThemeApp";
 import { useApp } from "../ThemeApp";
+import { postComment } from "../libs/fetcher";
 
 const api = import.meta.env.VITE_API;
 
@@ -13,7 +15,8 @@ export default function Comments() {
     const { id } = useParams();
     const navigate = useNavigate();
 
-    const { setGlobalMsg } = useApp();
+    const { setGlobalMsg, auth } = useApp();
+    const contentInput = useRef();
 
     const { isLoading, isError, error, data } = useQuery("comments", 
         async () => {
@@ -21,6 +24,17 @@ export default function Comments() {
             return res.json();
         }
     );
+
+    const addComment = useMutation(async content => postComment(content, id),{
+        onSuccess: async comment => {
+            await queryClient.cancelQueries("comments");
+            await queryClient.setQueryData("comments", old => {
+                old.comments = [...old.comments, comment];
+                return { ...old };
+            });
+            setGlobalMsg("A comment added");
+        },
+    });
 
     const removePost = useMutation(async id => {
         await fetch(`${api}/content/posts/${id}`, {
@@ -82,12 +96,32 @@ export default function Comments() {
                 );
             })}
             
-            <form>
-                <Box sx={{ display: "flex", flexDirection: "column", gap: 1, mt: 3, }}>
-                    <TextField multiline placeholder="Your Comment"/>
-                    <Button type="submit" variant="contained">Reply</Button>
+            {auth && (<form onSubmit={e => {
+                e.preventDefault();
+                const content = contentInput.current.value;
+                if(!content) return false;
+
+                addComment.mutate(content);
+                e.currentTarget.reset();
+            }}>
+                <Box 
+                    sx={{ 
+                        display: "flex", 
+                        flexDirection: "column", 
+                        gap: 1, 
+                        mt: 3, 
+                    }}>
+                    <TextField 
+                        inputRef={contentInput}
+                        multiline 
+                        placeholder="Your Comment"/>
+                    <Button 
+                        type="submit" 
+                        variant="contained">
+                            Reply
+                    </Button>
                 </Box>
-            </form>
+            </form>)}
         </Box>
     );
 }

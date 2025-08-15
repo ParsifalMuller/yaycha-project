@@ -58,11 +58,16 @@ export default function Item({ item, remove, primary, comment }) {
                     {item.content}
                 </Typography>
 
-                <Box sx={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    gap: 1,
+                <Box
+                    onClick={e => {
+                        navigate(`/profile/${item.user.id}`);
+                        e.stopPropagation();
+                    }}
+                    sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: 1,
                 }}>
                     <UserIcon fontSize="12"
                     color="info"/>

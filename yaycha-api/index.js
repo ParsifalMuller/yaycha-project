@@ -15,8 +15,8 @@ app.use("/", userRouter);
 const { contentRouter } = require("./routers/content");
 app.use("/content", contentRouter);
 
-
-app.get("/info", (req, res) => {
+// "/info" is replaced with "/"
+app.get("/", (req, res) => {
     res.json({ msg: "Yaycha API"});
 });
 
