@@ -1,5 +1,10 @@
 const api = import.meta.env.VITE_API;
 
+// Example getToken implementation; replace with your actual token retrieval logic or import
+function getToken() {
+    return localStorage.getItem("token");
+}
+
 export async function postUser(data) {
     const res = await fetch(`${api}/users`, {
         method: "POST",
@@ -28,10 +33,6 @@ export async function postLogin(username, password) {
     throw new Error("Incorrect username or password");
 }
 
-// Example getToken implementation; replace with your actual token retrieval logic or import
-function getToken() {
-    return localStorage.getItem("token");
-}
 
 export async function fetchUser(id) {
     const token = getToken();
@@ -82,4 +83,85 @@ export async function postComment(content, postId) {
     });
     if(res.ok) return res.json();
     throw new Error("Error: Check Network Log");
+}
+
+export async function postPostLike(id) {
+    const token = getToken();
+    const res = await fetch(`${api}/content/like/posts/${id}`, {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+    return res.json();
+}
+
+export async function postCommentLike(id) {
+    const token = getToken();
+    const res = await fetch(`${api}/content/like/comments/${id}`, {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+    return res.json();
+}
+
+export async function deletePostLike(id) {
+    const token = getToken();
+    const res = await fetch(`${api}/content/unlike/posts/${id}`, {
+        method: "DELETE",
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+    return res.json();
+}
+
+export async function deleteCommentLike(id) {
+    const token = getToken();
+    const res = await fetch(`${api}/content/unlike/comments/${id}`, {
+        method: "DELETE",
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+    return res.json();
+}
+
+export async function fetchPostLikes(id) {
+    const res = await fetch(`${api}/content/likes/posts/${id}`);
+    return res.json();
+}
+
+export async function fetchCommentLikes(id) {
+    const res = await fetch(`${api}/content/likes/comments/${id}`);
+    return res.json();
+}
+
+export async function postFollow(id) {
+    const token = getToken();
+    const res = await fetch(`${api}/follow/${id}`, {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+    return res.json();
+}
+
+export async function deleteFollow(id) {
+    const token = getToken();
+    const res = await fetch(`${api}/unfollow/${id}`, {
+        method: "DELETE",
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+    return res.json();
+}
+
+export async function fetchSearch(q) {
+    const res = await fetch(`${api}/search?q=${q}`);
+    return res.json();
 }

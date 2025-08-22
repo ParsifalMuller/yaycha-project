@@ -13,10 +13,13 @@ import {
     Add as AddIcon,
     LightMode as LightModeIcon,
     DarkMode as DarkModeIcon,
+    Search as SearchIcon,
 } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 export default function Header() {
     const { showDrawer, setShowDrawer, showForm, setShowForm, mode, setMode } = useApp();
+    const navigate = useNavigate();
 
     return (
         <AppBar position="static">
@@ -33,6 +36,12 @@ export default function Header() {
                         color="inherit"
                         onClick={()=>setShowForm(!showForm)}>
                             <AddIcon />
+                    </IconButton>
+
+                    <IconButton
+                        color="inherit"
+                        onClick={()=>navigate("/search")}>
+                        <SearchIcon />
                     </IconButton>
                     {mode === "dark" ? (
                         <IconButton

@@ -4,7 +4,6 @@ import {
     CardContent,
     Typography,
     IconButton,
-    CardMedia,
 } from "@mui/material";
 
 import {
@@ -16,6 +15,10 @@ import {
 import { green } from "@mui/material/colors";
 import { useNavigate } from "react-router-dom";
 import { formatRelative } from "date-fns";
+// import { useApp } from "../ThemeApp";
+
+import LikeButton from "./LikeButton";
+import CommentButton from "./CommentButton";
 
 export default function Item({ item, remove, primary, comment }) {
     const navigate = useNavigate();
@@ -39,8 +42,10 @@ export default function Item({ item, remove, primary, comment }) {
                             gap: 1,
                     }}>
                         <TimeIcon fontSize="10" color="success"/>
-                        <Typography >
-                            {formatRelative(item.create, new Date())}
+                        <Typography 
+                            variant="caption"
+                            sx={{ color: green[500] }}>
+                                {formatRelative(item.created, new Date())}
                         </Typography>
                     </Box>
                     <IconButton
@@ -57,23 +62,34 @@ export default function Item({ item, remove, primary, comment }) {
                 <Typography sx={{ my: 3}}>
                     {item.content}
                 </Typography>
-
-                <Box
-                    onClick={e => {
-                        navigate(`/profile/${item.user.id}`);
-                        e.stopPropagation();
-                    }}
+                <Box 
                     sx={{
                         display: "flex",
                         flexDirection: "row",
                         alignItems: "center",
-                        gap: 1,
-                }}>
-                    <UserIcon fontSize="12"
-                    color="info"/>
-                    <Typography variant="caption">
-                        {item.user.name}
-                    </Typography>
+                        justifyContent: "space-between",
+                    }}>
+                        <Box
+                            onClick={e => {
+                                navigate(`/profile/${item.user.id}`);
+                                e.stopPropagation();
+                            }}
+                            sx={{
+                                display: "flex",
+                                flexDirection: "row",
+                                alignItems: "center",
+                                gap: 1,
+                        }}>
+                            <UserIcon fontSize="12"
+                            color="info"/>
+                            <Typography variant="caption">
+                                {item.user.name}
+                            </Typography>
+                        </Box>
+                        <Box>
+                            <LikeButton item={item} comment={comment}/>
+                            <CommentButton item={item} comment={comment} />
+                        </Box>
                 </Box>
             </CardContent>
         </Card>

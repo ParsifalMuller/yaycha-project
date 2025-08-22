@@ -56,8 +56,12 @@ const router = createBrowserRouter([
                 element: <Profile />,
             },
             { 
-                path: "/likes/:id",
-                element: <Likes />
+                path: "/likes/:id/:type",
+                element: <Likes />,
+            },
+            {
+                path: "/search",
+                element: <Search />,
             },
         ],
     },
